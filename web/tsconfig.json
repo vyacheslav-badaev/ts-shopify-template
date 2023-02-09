@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"outDir": "dist",
+		"allowJs": true,
+		"jsx": "react-jsx",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"plugins": [{ "name": "typescript-plugin-css-modules" }],
+		"types": ["vite/client", "node"]
+	},
+	"include": ["./**/*", "./frontend/**/*"],
+	"exclude": ["node_modules", "dist"]
+}
