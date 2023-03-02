@@ -1,0 +1,36 @@
+import { productCreator, shopify } from '../services/shopify.js';
+import { Session } from '@shopify/shopify-api/lib/session/session';
+import { Response } from 'express';
+
+export const getProductsCount = async (_req: Request, res: Response) => {
+	try {
+		const countData = await shopify.api.rest.Product.count({
+			session: res.locals.shopify.session as Session,
+		});
+
+		res.status(200).send(countData);
+	} catch (e) {
+		if (e instanceof Error) {
+			console.error('Error: ', e.message);
+			res.status(500).send({ error: e.message });
+		}
+	}
+};
+
+export const createNewProducts = async (_req: Request, res: Response) => {
+	let status = 200;
+	let error = '';
+	const { count = 5 }: { count: number } = _req.body as any;
+
+	try {
+		await productCreator(res.locals.shopify.session, count);
+	} catch (e) {
+		if (e instanceof Error) {
+			console.error(`Failed to process products/create: ${e.message}`);
+			status = 500;
+			error = e.message;
+		}
+	}
+
+	res.status(status).send({ success: status === 200, error });
+};

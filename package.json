@@ -15,5 +15,8 @@
     "@shopify/app": "3.42.0",
     "@shopify/cli": "3.42.0"
   },
-  "author": "viacheslavbadaiev"
+  "author": "viacheslavbadaiev",
+  "devDependencies": {
+    "prettier": "^2.8.4"
+  }
 }

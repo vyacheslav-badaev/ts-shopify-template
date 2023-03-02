@@ -4,8 +4,11 @@ import { TitleBar } from '@shopify/app-bridge-react';
 import { GlobalStyles, trophyImage } from '../assets';
 
 import { ProductsCard } from '../components';
+import { useContext } from 'react';
+import { ShopProfileContext } from '../components/providers/ShopProfileProvider';
 
 export default function HomePage() {
+	const shopContext = useContext(ShopProfileContext);
 	return (
 		<Page narrowWidth>
 			<TitleBar title="App name" primaryAction={null} />
@@ -16,7 +19,9 @@ export default function HomePage() {
 							<Stack wrap={false} spacing="extraTight" distribution="trailing" alignment="center">
 								<Stack.Item fill>
 									<TextContainer spacing="loose">
-										<Heading>Nice work on building a Shopify app 🎉</Heading>
+										<Heading>
+											Welcome {shopContext.name}, Nice work on building a Shopify app 🎉
+										</Heading>
 										<p>
 											Your app is ready to explore! It contains everything you need to get started
 											including the{' '}

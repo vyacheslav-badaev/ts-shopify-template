@@ -1,24 +1,40 @@
 import { useState } from 'react';
-import { Card, Heading, TextContainer, DisplayText, TextStyle } from '@shopify/polaris';
+import { Card, DisplayText, Heading, TextContainer, TextStyle } from '@shopify/polaris';
 import { Toast } from '@shopify/app-bridge-react';
-import { useAppQuery, useAuthenticatedFetch } from '../hooks';
+import { useAppQuery } from '../hooks';
+import { useAppMutation } from '../hooks/useAppMutation';
 
 export function ProductsCard() {
 	const emptyToastProps = { content: null, error: false };
-	const [isLoading, setIsLoading] = useState(true);
 	const [toastProps, setToastProps] = useState(emptyToastProps);
-	const fetch = useAuthenticatedFetch();
 
 	const {
 		data,
 		refetch: refetchProductCount,
 		isLoading: isLoadingCount,
 		isRefetching: isRefetchingCount,
-	} = useAppQuery({
+	} = useAppQuery<{ count: number }, Error>({
 		url: '/api/products/count',
-		reactQueryOptions: {
-			onSuccess: () => {
-				setIsLoading(false);
+		fetchInit: {},
+		reactQueryOptions: {},
+	});
+
+	const { mutate: handlePopulate, isLoading: isLoadingPopulate } = useAppMutation({
+		url: '/api/products/create',
+		fetchInit: {
+			method: 'POST',
+			body: JSON.stringify({ count: 10 }),
+		},
+		reactMutationOptions: {
+			onSuccess: async () => {
+				await refetchProductCount();
+				setToastProps({ content: '5 products created!', error: false });
+			},
+			onError: () => {
+				setToastProps({
+					content: 'There was an error creating products',
+					error: true,
+				});
 			},
 		},
 	});
@@ -27,22 +43,6 @@ export function ProductsCard() {
 		<Toast {...toastProps} onDismiss={() => setToastProps(emptyToastProps)} />
 	);
 
-	const handlePopulate = async () => {
-		setIsLoading(true);
-		const response = await fetch('/api/products/create', {});
-
-		if (response.ok) {
-			await refetchProductCount();
-			setToastProps({ content: '5 products created!', error: false });
-		} else {
-			setIsLoading(false);
-			setToastProps({
-				content: 'There was an error creating products',
-				error: true,
-			});
-		}
-	};
-
 	return (
 		<>
 			{toastMarkup}
@@ -50,9 +50,9 @@ export function ProductsCard() {
 				title="Product Counter"
 				sectioned
 				primaryFooterAction={{
-					content: 'Populate 5 products',
+					content: 'Populate 10 products',
 					onAction: handlePopulate,
-					loading: isLoading,
+					loading: isLoadingCount || isLoadingPopulate,
 				}}
 			>
 				<TextContainer spacing="loose">
@@ -63,7 +63,9 @@ export function ProductsCard() {
 					<Heading element="h4">
 						TOTAL PRODUCTS
 						<DisplayText size="medium">
-							<TextStyle variation="strong">{isLoadingCount ? '-' : data.count}</TextStyle>
+							<TextStyle variation="strong">
+								{isLoadingCount || isLoadingPopulate ? '-' : data.count}
+							</TextStyle>
 						</DisplayText>
 					</Heading>
 				</TextContainer>

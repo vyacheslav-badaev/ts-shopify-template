@@ -1,7 +1,8 @@
 import { useAuthenticatedFetch } from './useAuthenticatedFetch';
 import { useMemo } from 'react';
-import { QueryKey, useQuery } from 'react-query';
-import { UseQueryOptions } from 'react-query/types/react/types';
+import { useMutation } from 'react-query';
+import { MutationKey } from 'react-query/types/core/types';
+import { UseMutationOptions } from 'react-query/types/react/types';
 
 /**
  * A hook for querying your custom app data.
@@ -15,33 +16,40 @@ import { UseQueryOptions } from 'react-query/types/react/types';
  *
  * @returns Return value of useQuery.  See: https://react-query.tanstack.com/reference/useQuery.
  */
-export const useAppQuery = <
-	TQueryFnData = unknown,
+export const useAppMutation = <
+	TData = unknown,
 	TError = unknown,
-	TData = TQueryFnData,
-	TQueryKey extends QueryKey = QueryKey
+	TVariables = void,
+	TContext = unknown
 >({
 	url,
 	fetchInit = {},
-	reactQueryOptions,
+	reactMutationOptions,
 }: {
-	url: TQueryKey;
+	url: MutationKey | string;
 	fetchInit: RequestInit;
-	reactQueryOptions: Omit<
-		UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
-		'queryKey' | 'queryFn'
+	reactMutationOptions: Omit<
+		UseMutationOptions<TData, TError, TVariables, TContext>,
+		'mutationKey' | 'mutationFn'
 	>;
 }) => {
 	const authenticatedFetch = useAuthenticatedFetch();
 	const fetch = useMemo(() => {
 		return async () => {
-			const response = await authenticatedFetch(url as string, fetchInit);
+			const response = await authenticatedFetch(url as string, {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				...fetchInit,
+			});
 			return response.json();
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [url, JSON.stringify(fetchInit), authenticatedFetch]);
 
-	return useQuery<TQueryFnData, TError, TData, TQueryKey>(url, fetch, {
-		...reactQueryOptions,
-		refetchOnWindowFocus: false,
+	return useMutation<TData, TError, TVariables, TContext>(fetch, {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		mutationKey: url,
+		...reactMutationOptions,
 	});
 };

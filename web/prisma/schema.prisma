@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id                        String @id @default(auto()) @map("_id") @db.ObjectId
+  myshopifyDomain           String          @unique
+  active                    Boolean
+  accessToken               String          @unique
+  gid                       String          @unique
+  name                      String          @unique
+  contactEmail              String
+  currencyCode              String
+  description               String?
+  email                     String
+  primaryDomain             String
+  url                       String
+  billingPlan               String?
+  subscriptionId            String?
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+}
