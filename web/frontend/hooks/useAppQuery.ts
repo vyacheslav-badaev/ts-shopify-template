@@ -36,6 +36,10 @@ export const useAppQuery = <
 	const fetch = useMemo(() => {
 		return async () => {
 			const response = await authenticatedFetch(url as string, fetchInit);
+			if (!response.ok) {
+				const res = await response.json();
+				throw new Error(res?.error);
+			}
 			return response.json();
 		};
 	}, [url, JSON.stringify(fetchInit), authenticatedFetch]);

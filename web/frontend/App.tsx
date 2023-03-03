@@ -4,6 +4,7 @@ import Routes from './Routes';
 
 import { AppBridgeProvider, PolarisProvider, QueryProvider } from './components';
 import ShopProfileProvider from './components/providers/ShopProfileProvider';
+import { Frame } from '@shopify/polaris';
 
 export default function App() {
 	// Any .tsx or .jsx files in /pages will become a route
@@ -16,17 +17,23 @@ export default function App() {
 			<BrowserRouter>
 				<AppBridgeProvider>
 					<QueryProvider>
-						<ShopProfileProvider>
-							<NavigationMenu
-								navigationLinks={[
-									{
-										label: 'Page name',
-										destination: '/pagename',
-									},
-								]}
-							/>
-							<Routes pages={pages} />
-						</ShopProfileProvider>
+						<Frame>
+							<ShopProfileProvider>
+								<NavigationMenu
+									navigationLinks={[
+										{
+											label: 'Billing',
+											destination: '/billing',
+										},
+										{
+											label: 'FAQ',
+											destination: '/faq',
+										},
+									]}
+								/>
+								<Routes pages={pages} />
+							</ShopProfileProvider>
+						</Frame>
 					</QueryProvider>
 				</AppBridgeProvider>
 			</BrowserRouter>

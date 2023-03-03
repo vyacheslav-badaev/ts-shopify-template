@@ -19,7 +19,7 @@ import { UseMutationOptions } from 'react-query/types/react/types';
 export const useAppMutation = <
 	TData = unknown,
 	TError = unknown,
-	TVariables = void,
+	TVariables = unknown,
 	TContext = unknown
 >({
 	url,
@@ -35,21 +35,24 @@ export const useAppMutation = <
 }) => {
 	const authenticatedFetch = useAuthenticatedFetch();
 	const fetch = useMemo(() => {
-		return async () => {
+		return async (body: { [key: string]: any }) => {
 			const response = await authenticatedFetch(url as string, {
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				...fetchInit,
+				body: JSON.stringify(body),
 			});
+			if (!response.ok) {
+				const res = await response.json();
+				throw new Error(res?.error);
+			}
 			return response.json();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [url, JSON.stringify(fetchInit), authenticatedFetch]);
 
-	return useMutation<TData, TError, TVariables, TContext>(fetch, {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		mutationKey: url,
+	return useMutation<TData, TError, TVariables, TContext>(url, fetch, {
 		...reactMutationOptions,
 	});
 };

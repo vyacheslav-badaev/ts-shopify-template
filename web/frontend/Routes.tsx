@@ -1,6 +1,6 @@
 import { Route, Routes as ReactRouterRoutes } from 'react-router-dom';
 
-function useRoutes(pages) {
+function useRoutes(pages: Record<string, { [key: string]: any }>) {
 	const routes = Object.keys(pages)
 		.map((key) => {
 			let path = key

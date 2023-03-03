@@ -21,7 +21,7 @@ const DB_PATH = new URL(process.env?.DATABASE_URL_BASE);
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
 export const billingConfig: BillingConfig = {
-	Basic: {
+	basic: {
 		// This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
 		amount: 5.0,
 		currencyCode: 'USD',
@@ -29,7 +29,7 @@ export const billingConfig: BillingConfig = {
 		trialDays: 14,
 		replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
 	},
-	Standard: {
+	standard: {
 		// This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
 		amount: 15.0,
 		currencyCode: 'USD',
@@ -37,7 +37,7 @@ export const billingConfig: BillingConfig = {
 		trialDays: null,
 		replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
 	},
-	Pro: {
+	pro: {
 		// This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
 		amount: 15.0,
 		currencyCode: 'USD',
@@ -125,7 +125,7 @@ export const CREATE_PRODUCTS_MUTATION = `
   }
 `;
 
-export async function productCreator(session, count = 5) {
+export async function productCreator(session: Session, count = 5) {
 	const client = new shopify.api.clients.Graphql({ session });
 
 	try {

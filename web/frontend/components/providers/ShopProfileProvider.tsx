@@ -4,11 +4,18 @@ import { Banner, Frame, Loading } from '@shopify/polaris';
 import { IShopProfile } from '../../types/shop.interface';
 import { useLocation } from 'react-router-dom';
 
-export const ShopProfileContext = React.createContext<IShopProfile>(undefined);
+export const ShopProfileContext = React.createContext<{
+	dataValue: IShopProfile;
+	refetchProfile: Function;
+}>(undefined);
 
 export default function ShopProfileProvider({ children }) {
 	const location = useLocation();
-	const { data, status } = useAppQuery<IShopProfile, Error>({
+	const {
+		data,
+		status,
+		refetch: refetchProfile,
+	} = useAppQuery<IShopProfile, Error>({
 		url: '/api/profile',
 		fetchInit: {},
 		reactQueryOptions: {},
@@ -33,12 +40,12 @@ export default function ShopProfileProvider({ children }) {
 	}
 
 	if (status === 'loading') {
-		return (
-			<Frame>
-				<Loading />
-			</Frame>
-		);
+		return <Loading />;
 	}
 
-	return <ShopProfileContext.Provider value={dataValue}>{children}</ShopProfileContext.Provider>;
+	return (
+		<ShopProfileContext.Provider value={{ dataValue, refetchProfile }}>
+			{children}
+		</ShopProfileContext.Provider>
+	);
 }

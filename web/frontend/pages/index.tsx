@@ -1,4 +1,4 @@
-import { Card, Page, Layout, TextContainer, Image, Stack, Link, Heading } from '@shopify/polaris';
+import { Card, Heading, Image, Layout, Link, Page, Stack, TextContainer } from '@shopify/polaris';
 import { TitleBar } from '@shopify/app-bridge-react';
 
 import { GlobalStyles, trophyImage } from '../assets';
@@ -20,7 +20,7 @@ export default function HomePage() {
 								<Stack.Item fill>
 									<TextContainer spacing="loose">
 										<Heading>
-											Welcome {shopContext.name}, Nice work on building a Shopify app 🎉
+											Welcome {shopContext.dataValue.name}, Nice work on building a Shopify app 🎉
 										</Heading>
 										<p>
 											Your app is ready to explore! It contains everything you need to get started

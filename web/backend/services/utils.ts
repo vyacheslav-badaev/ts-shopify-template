@@ -12,7 +12,7 @@ export function randomPrice() {
 	return Math.round((Math.random() * 10 + Number.EPSILON) * 100) / 100;
 }
 
-export const registerWebhooks = async (domain) => {
+export const registerWebhooks = async (domain: string) => {
 	try {
 		const shop = await getShopByDomain(domain);
 
@@ -27,7 +27,9 @@ export const registerWebhooks = async (domain) => {
 
 		await shopify.api.webhooks.register({ session: session as Session });
 	} catch (e) {
-		console.error('Error register webhooks for dev store: ', e.message);
+		if (e instanceof Error) {
+			console.error('Error register webhooks for dev store: ', e.message);
+		}
 	}
 };
 

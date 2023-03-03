@@ -1,11 +1,10 @@
 import { productCreator, shopify } from '../services/shopify.js';
-import { Session } from '@shopify/shopify-api/lib/session/session';
 import { Response } from 'express';
 
 export const getProductsCount = async (_req: Request, res: Response) => {
 	try {
 		const countData = await shopify.api.rest.Product.count({
-			session: res.locals.shopify.session as Session,
+			session: res.locals.shopify.session,
 		});
 
 		res.status(200).send(countData);
@@ -17,10 +16,13 @@ export const getProductsCount = async (_req: Request, res: Response) => {
 	}
 };
 
-export const createNewProducts = async (_req: Request, res: Response) => {
+export const createNewProducts = async (
+	_req: Omit<Request, 'body'> & { body: { count: number } },
+	res: Response
+) => {
 	let status = 200;
 	let error = '';
-	const { count = 5 }: { count: number } = _req.body as any;
+	const { count = 5 }: { count: number } = _req.body;
 
 	try {
 		await productCreator(res.locals.shopify.session, count);

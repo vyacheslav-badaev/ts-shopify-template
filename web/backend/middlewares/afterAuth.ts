@@ -1,11 +1,10 @@
 import { fetchShopData } from '../services/shopify.js';
 import { createNewShop, getShopByDomain, updateShopByDomain } from '../services/db-shop.js';
-import { Session } from '@shopify/shopify-api/lib/session/session';
 import { RequestHandler } from 'express';
 
 const AfterAuth: () => RequestHandler = () => async (req, res, next) => {
 	try {
-		const session = res.locals.shopify.session as Session;
+		const session = res.locals.shopify.session;
 		const shopShopify = await fetchShopData(session);
 		const shopDb = await getShopByDomain(session.shop);
 
@@ -28,6 +27,7 @@ const AfterAuth: () => RequestHandler = () => async (req, res, next) => {
 				url: shopShopify.url,
 				billingPlan: null,
 				subscriptionId: null,
+				billingStatus: null,
 			});
 		} else {
 			await updateShopByDomain(session.shop, {
@@ -43,6 +43,7 @@ const AfterAuth: () => RequestHandler = () => async (req, res, next) => {
 				url: shopShopify.url,
 				billingPlan: null,
 				subscriptionId: null,
+				billingStatus: null,
 			});
 		}
 

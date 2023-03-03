@@ -25,6 +25,7 @@ model Shop {
   url                       String
   billingPlan               String?
   subscriptionId            String?
+  billingStatus             String?
   createdAt                 DateTime        @default(now())
   updatedAt                 DateTime        @updatedAt
 }

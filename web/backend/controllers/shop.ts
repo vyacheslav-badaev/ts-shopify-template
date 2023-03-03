@@ -1,10 +1,9 @@
 import { getShopByDomain } from '../services/db-shop.js';
-import { Session } from '@shopify/shopify-api/lib/session/session';
 import { Request, Response } from 'express';
 
 export const getProfile = async (req: Request, res: Response) => {
 	try {
-		const session = res.locals.shopify.session as Session;
+		const session = res.locals.shopify.session;
 		const shopDB = await getShopByDomain(session.shop);
 		if (!shopDB) {
 			throw new Error('Shop not exist in database');
