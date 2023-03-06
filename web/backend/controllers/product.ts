@@ -1,5 +1,7 @@
 import { productCreator, shopify } from '../services/shopify.js';
 import { Response } from 'express';
+import { logger } from '../services/logger.js';
+import { prepareErrorMessage } from '../services/utils.js';
 
 export const getProductsCount = async (_req: Request, res: Response) => {
 	try {
@@ -10,7 +12,7 @@ export const getProductsCount = async (_req: Request, res: Response) => {
 		res.status(200).send(countData);
 	} catch (e) {
 		if (e instanceof Error) {
-			console.error('Error: ', e.message);
+			logger.error(prepareErrorMessage(e));
 			res.status(500).send({ error: e.message });
 		}
 	}
@@ -28,7 +30,7 @@ export const createNewProducts = async (
 		await productCreator(res.locals.shopify.session, count);
 	} catch (e) {
 		if (e instanceof Error) {
-			console.error(`Failed to process products/create: ${e.message}`);
+			logger.error(prepareErrorMessage(e));
 			status = 500;
 			error = e.message;
 		}

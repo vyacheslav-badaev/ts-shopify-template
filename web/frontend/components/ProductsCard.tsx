@@ -23,7 +23,6 @@ export function ProductsCard() {
 		url: '/api/products/create',
 		fetchInit: {
 			method: 'POST',
-			body: JSON.stringify({ count: 10 }),
 		},
 		reactMutationOptions: {
 			onSuccess: async () => {
@@ -51,7 +50,7 @@ export function ProductsCard() {
 				sectioned
 				primaryFooterAction={{
 					content: 'Populate 10 products',
-					onAction: handlePopulate,
+					onAction: () => handlePopulate({ count: 10 }),
 					loading: isLoadingCount || isLoadingPopulate,
 				}}
 			>

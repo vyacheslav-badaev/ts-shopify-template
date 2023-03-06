@@ -12,7 +12,9 @@ const FaqItem = ({ question, answer }) => {
 					<Stack distribution={'trailing'} alignment={'center'} wrap={false}>
 						<Stack.Item fill>
 							<TextContainer>
-								<h1 style={{ fontWeight: 'bold', fontSize: '1rem' }}>{question}</h1>
+								<h1 style={{ fontWeight: 'bold', fontSize: '1rem' }} onClick={handleToggle}>
+									{question}
+								</h1>
 							</TextContainer>
 						</Stack.Item>
 						<Stack.Item>

@@ -11,7 +11,7 @@ export default function HomePage() {
 	const shopContext = useContext(ShopProfileContext);
 	return (
 		<Page narrowWidth>
-			<TitleBar title="App name" primaryAction={null} />
+			<TitleBar title="Template App Example" primaryAction={null} />
 			<Layout>
 				<Layout.Section>
 					<div className={GlobalStyles.exampleWrapper}>

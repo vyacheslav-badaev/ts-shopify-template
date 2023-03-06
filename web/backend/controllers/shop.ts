@@ -1,5 +1,7 @@
 import { getShopByDomain } from '../services/db-shop.js';
 import { Request, Response } from 'express';
+import { logger } from '../services/logger.js';
+import { prepareErrorMessage } from '../services/utils.js';
 
 export const getProfile = async (req: Request, res: Response) => {
 	try {
@@ -12,7 +14,7 @@ export const getProfile = async (req: Request, res: Response) => {
 		res.status(200).send(shopDB);
 	} catch (e) {
 		if (e instanceof Error) {
-			console.error('Error: ', e.message);
+			logger.error(prepareErrorMessage(e));
 			res.status(500).send({
 				error: e.message,
 			});

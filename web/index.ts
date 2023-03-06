@@ -11,6 +11,7 @@ import afterAuth from './backend/middlewares/afterAuth.js';
 import { WebhookHandlersParam } from '@shopify/shopify-app-express/build/ts/webhooks/types';
 import { registerWebhooks } from './backend/services/utils.js';
 import { ensureHasBilling } from './backend/middlewares/ensureHasBilling.js';
+import { logger } from './backend/services/logger.js';
 
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
@@ -57,4 +58,5 @@ app.listen(PORT, async () => {
 	if (process.env.NODE_ENV === 'development' && process.env.DEV_STORE) {
 		await registerWebhooks(process.env.DEV_STORE);
 	}
+	logger.info('Server was started on port: ' + PORT);
 });

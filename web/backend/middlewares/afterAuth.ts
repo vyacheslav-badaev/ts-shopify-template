@@ -1,6 +1,8 @@
 import { fetchShopData } from '../services/shopify.js';
 import { createNewShop, getShopByDomain, updateShopByDomain } from '../services/db-shop.js';
 import { RequestHandler } from 'express';
+import { logger } from '../services/logger.js';
+import { prepareErrorMessage } from '../services/utils.js';
 
 const AfterAuth: () => RequestHandler = () => async (req, res, next) => {
 	try {
@@ -50,6 +52,7 @@ const AfterAuth: () => RequestHandler = () => async (req, res, next) => {
 		next();
 	} catch (e) {
 		if (e instanceof Error) {
+			logger.error(prepareErrorMessage(e));
 			return res.status(400).send({
 				error: e.message,
 			});

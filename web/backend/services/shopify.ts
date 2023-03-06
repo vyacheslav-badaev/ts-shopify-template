@@ -10,8 +10,9 @@ import { MongoDBSessionStorage } from '@shopify/shopify-app-session-storage-mong
 import { restResources } from '@shopify/shopify-api/rest/admin/2023-01';
 import { IFetchShopData } from '../types/shop';
 import { Session } from '@shopify/shopify-api/lib/session/session';
-import { randomPrice, randomTitle } from './utils.js';
+import { prepareErrorMessage, randomPrice, randomTitle } from './utils.js';
 import { BillingConfig } from '@shopify/shopify-api/lib/billing/types';
+import { logger } from './logger.js';
 
 dotenv.config();
 
@@ -109,7 +110,7 @@ export const fetchShopData = async (session: Session) => {
 		return res.body?.data?.shop;
 	} catch (e) {
 		if (e instanceof Error) {
-			console.error('Error:', e.message);
+			logger.error(prepareErrorMessage(e));
 		}
 		return null;
 	}
@@ -142,11 +143,11 @@ export async function productCreator(session: Session, count = 5) {
 				},
 			});
 		}
-	} catch (error) {
-		if (error instanceof GraphqlQueryError) {
-			throw new Error(`${error.message}\n${JSON.stringify(error.response, null, 2)}`);
+	} catch (e) {
+		if (e instanceof GraphqlQueryError) {
+			throw new Error(`${e.message}\n${JSON.stringify(e.response, null, 2)}`);
 		} else {
-			throw error;
+			throw e;
 		}
 	}
 }

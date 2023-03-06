@@ -38,12 +38,20 @@ export default function Billing() {
 	});
 
 	const handleToggle = useCallback(async (plan) => {
-		const { confirmationUrl } = await handleChange({ plan: plan });
+		setChangeRequest(true);
+		const { confirmationUrl = null } = await handleChange({ plan: plan });
+		if (!confirmationUrl) {
+			setToastProps({
+				content: 'Server side error',
+				error: true,
+			});
+			return;
+		}
 		const redirect = Redirect.create(app);
-		redirect.dispatch(Redirect.Action.REMOTE, decodeURIComponent(confirmationUrl));
+		redirect.dispatch(Redirect.Action.REMOTE, confirmationUrl);
 	}, []);
 
-	const planList = Object.entries(plansData);
+	const planList = plansData ? Object.entries(plansData) : [];
 	const currentPlan = shopContext.dataValue.billingPlan;
 	const toastMarkup = toastProps.content && !isLoading && (
 		<Toast {...toastProps} onDismiss={() => setToastProps({ content: null, error: false })} />
